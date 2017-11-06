@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+	<head>
+
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+		<meta name="format-detection" content="telephone=no" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+		
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.1/knockout-min.js"></script>
+		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=drawing,geometry"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script>
+				
+		<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>		
+		
+		<script type="text/javascript">
+		
+		var liveUsers = [];
+		var markersArray = [];
+		var infoWindowArray = [];
+		
+		function clearOverlays() {
+		  for (var i = 0; i < markersArray.length; i++ ) {
+			markersArray[i].setMap(null);
+		  }
+		  markersArray.length = 0;
+		  for (var i = 0; i < infoWindowArray.length; i++ ) {
+			infoWindowArray[i].setMap(null);
+		  }
+		  infoWindowArray.length = 0;
+		}
+		
+		$(function () {
+			StartApp();
+		});
+			
+		</script>
+		
+		<title>IARC | Holyland LiveMap</title>
+
+		<!-- Meta -->
+		<meta name="description" content="Holyland Square Manager">
+		<meta name="author" content="Gil 4Z1KD">
+
+		<style type="text/css">
+			.map {
+				width:100%;
+			}
+			/* important! bootstrap sets max-width on img to 100% which conflicts with google map canvas*/
+			.map img {
+				max-width: none;
+			}
+			#map-canvas
+			{
+				height: 100vh !important;
+			}
+			.gm-style-iw + div {display: none;}
+		</style>
+		
+	</head>
+	<body>
+		<div id="map-canvas"></div>
+	
+	<script type="text/javascript">
+        
+		var map; //holds the map object
+		var marker; //holds the marker object
+		
+		var StartApp = function () 
+		{
+            if (navigator.geolocation) 
+			{
+				if (!map)
+				{
+					initMap();
+				}
+            } 
+			else 
+			{
+                $('#square').html("Geolocation is not supported by this browser, Try Chrome.")
+            }
+        }
+		
+		var initMap = function () 
+		{
+            var mapOptions = { center: new google.maps.LatLng(31.47, 35.27), zoom: 3 }; //Center on Israel
+            map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions); //Create new map
+			var clientHeight = document.documentElement.clientHeight*0.9; //Set height
+			$('#map-canvas').height(clientHeight);
+			google.maps.event.trigger(map, 'resize');
+			showInfoWindows();
+        }
+		
+		var showInfoWindows = function()
+		{			
+			$.ajax({
+			type: "POST",
+			url: "./Server/getLiveMap.php",
+			}).done(function (data) {
+				liveUsers = data;
+				clearOverlays();
+				ko.utils.arrayForEach(liveUsers, function (user) {					
+					var infowindow = new google.maps.InfoWindow({
+						content: user.callsign + "<br>" + user.freq + "<br>" + user.info,
+						disableAutoPan: true
+					});
+					infoWindowArray.push(infowindow);
+					
+					var myLatlng = new google.maps.LatLng(user.lat, user.lng);
+					marker = new google.maps.Marker({
+						position: myLatlng,
+						map: map,
+						visible: false,
+						title: user.callsign + ", " + user.info
+					});
+					markersArray.push(marker);
+					infowindow.open(map, marker);    
+				});
+				setTimeout(showInfoWindows, 1000*60*1);
+			});
+		}
+    </script>
+	</body>
+</html>

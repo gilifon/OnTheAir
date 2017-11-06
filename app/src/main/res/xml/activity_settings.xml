@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <PreferenceCategory
+        android:title="Personal Informations"
+        android:key="personal_category">
+
+
+        <EditTextPreference
+            android:key="callsign"
+            android:title="Callsign"
+            android:summary="Enter Your Callsign"
+            android:dialogTitle="Callsign"
+            android:dialogMessage="Enter Your Callsign"
+            android:defaultValue=""
+            android:inputType="textCapCharacters"/>
+
+        <EditTextPreference
+            android:key="frequency"
+            android:title="Working Frequency"
+            android:summary="Enter Your Frequency"
+            android:dialogTitle="Working Frequency"
+            android:dialogMessage="Enter Your Frequency"
+            android:defaultValue=""
+            android:inputType="textCapWords"/>
+
+        <EditTextPreference
+            android:key="info"
+            android:title="Activity Info"
+            android:summary="Enter Activity Info"
+            android:dialogTitle="Activity Info"
+            android:dialogMessage="Enter Activity Info"
+            android:defaultValue=""
+            android:inputType="text"/>
+
+    </PreferenceCategory>
+</PreferenceScreen>
