@@ -1,0 +1,59 @@
+<div class="row">
+    <div class="col-auto align-self-start">
+        <app-multibtn (LeftBtnClick)="setDataDuration('1')" (CenterBtnClick)="setDataDuration('2')" (RightBtnClick)="setDataDuration('3')"></app-multibtn>
+    </div>
+    <div class="col align-self-end text-end">
+        <svg id="spinner" [style.display]="showSpinner ? 'inline' : 'none'" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="background: rgba(0,0,0,0);" width="24px" height="24px" viewBox="0 0 100 100">
+            <g transform="rotate(180 50 50)"><rect x="13.5" y="15" width="13" height="40" fill="#fbd644">
+            <animate attributeName="height" values="50;70;30;50" keyTimes="0;0.33;0.66;1" dur="0.3021148036253776s" repeatCount="indefinite" calcMode="spline" keySplines="0.5 0 0.5 1;0.5 0 0.5 1;0.5 0 0.5 1" begin="-0.12084592145015106s"></animate>
+            </rect><rect x="33.5" y="15" width="13" height="40" fill="#fbd644">
+            <animate attributeName="height" values="50;70;30;50" keyTimes="0;0.33;0.66;1" dur="0.3021148036253776s" repeatCount="indefinite" calcMode="spline" keySplines="0.5 0 0.5 1;0.5 0 0.5 1;0.5 0 0.5 1" begin="-0.06042296072507553s"></animate>
+            </rect><rect x="53.5" y="15" width="13" height="40" fill="#fbd644">
+            <animate attributeName="height" values="50;70;30;50" keyTimes="0;0.33;0.66;1" dur="0.3021148036253776s" repeatCount="indefinite" calcMode="spline" keySplines="0.5 0 0.5 1;0.5 0 0.5 1;0.5 0 0.5 1" begin="-0.18126888217522658s"></animate>
+            </rect><rect x="73.5" y="15" width="13" height="40" fill="#fbd644">
+            <animate attributeName="height" values="50;70;30;50" keyTimes="0;0.33;0.66;1" dur="0.3021148036253776s" repeatCount="indefinite" calcMode="spline" keySplines="0.5 0 0.5 1;0.5 0 0.5 1;0.5 0 0.5 1" begin="-0.3021148036253776s"></animate>
+            </rect></g>
+        </svg>
+    </div>
+</div>
+<div class="container border border-warning mt-3 rounded-3">
+    <div class="row table-header bg-black text-light text-center rounded-3">
+        <div class="col p-2">
+            <div (click)="setOrder('callsign')"><i [style.display]="OrderBy=='callsign' ? 'inline' : 'none'" [ngClass]="isDESC=='0' ? 'bi bi-arrow-up-short' : 'bi bi-arrow-down-short'"></i>Station</div>
+        </div>
+        <div class="col p-2">
+            <div (click)="setOrder('operator')"><i [style.display]="OrderBy=='operator' ? 'inline' : 'none'" [ngClass]="isDESC=='0' ? 'bi bi-arrow-up-short' : 'bi bi-arrow-down-short'"></i>Operator</div>
+        </div>
+        <div class="col p-2">
+            <div (click)="setOrder('frequency')"><i [style.display]="OrderBy=='frequency' ? 'inline' : 'none'" [ngClass]="isDESC=='0' ? 'bi bi-arrow-up-short' : 'bi bi-arrow-down-short'"></i>Freq</div>
+        </div>
+        <div class="col p-2">
+            <div (click)="setOrder('mode')"><i [style.display]="OrderBy=='mode' ? 'inline' : 'none'" [ngClass]="isDESC=='0' ? 'bi bi-arrow-up-short' : 'bi bi-arrow-down-short'"></i>Mode</div>
+        </div>
+        <div class="col p-2">
+            <div (click)="setOrder('timestamp')"><i [style.display]="OrderBy=='timestamp' ? 'inline' : 'none'" [ngClass]="isDESC=='0' ? 'bi bi-arrow-up-short' : 'bi bi-arrow-down-short'"></i>UTC</div>
+        </div>
+    </div>
+    <div class="row table-body text-uppercase text-center" *ngFor="let st of Stations; let i = index"  [attr.data-index]="i" [ngClass]="i%2==0 ? 'bg-holylogger-lightgrey text-black' : 'bg-holylogger-darkgrey bg-gradient text-white'">
+        <div class="col p-1">
+            <a class="nostyle" href="https://www.qrz.com/db/{{st.callsign}}" target="_blank">{{st.callsign}}</a>
+        </div>
+        <div class="col p-1">
+            <a class="nostyle" href="https://www.qrz.com/db/{{st.operator}}" target="_blank">{{st.operator}}</a>
+        </div>
+        <div class="col p-1">
+            {{myParseFloat(st.frequency)}}
+        </div>
+        <div class="col p-1">
+            {{st.mode}}
+        </div>
+        <div class="col p-1">
+            {{this.extractTime(st.timestamp)}}
+        </div>
+    </div>
+    <div class="row table-body text-center bg-holylogger-darkgrey bg-gradient text-white">
+        <div class="col p-3" [style.display]="!showSpinner && Stations.length == 0 ? 'inline' : 'none'">
+            <img class="mb-1" src="./assets/crown100.png" alt="" width="24"> There are no stations on the air <img class="mb-1" src="./assets/crown100.png" alt="" width="24">
+        </div>
+    </div>
+</div>

@@ -1,0 +1,8 @@
+.container-fluid{
+    display: flex;
+  justify-content: space-around;}
+
+  .bg-holylogger
+  {
+    background-color: #FBD644;
+  }
